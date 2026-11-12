@@ -1,109 +1,79 @@
-# School Timetable System
+# School Timetable System (Lightweight Local Setup)
 
-A modern Java desktop application for managing school timetables, built with modern Java (Java 21), object-oriented clean design principles, sealed classes, records, enums, interfaces, and a complete Java Swing Graphical User Interface (GUI).
+A clean, lightweight desktop Java Swing application for managing school timetables using **Modern Java (Java 21 LTS)**, object-oriented design principles (sealed classes, records, enums, interfaces), and a local **MySQL** database connected via plain JDBC.
 
----
-
-## 🏛️ Architecture & UML Class Mapping
-
-| Component | Java Feature | Role / Responsibility |
-| :--- | :--- | :--- |
-| `SubjectType` | `enum` | Enumerates school subjects with display names and string conversion utility stub. |
-| `EntryStatus` | `enum` | Enumerates schedule statuses (`SCHEDULED`, `RESCHEDULED`, `CANCELLED`). |
-| `RoomStatus` | `enum` | Enumerates classroom statuses (`AVAILABLE`, `OCCUPIED`, `MAINTENANCE`, `RESERVED`). |
-| `PlatformType` | `enum` | Enumerates online meeting platforms (`ZOOM`, `TEAMS`, `GOOGLE_MEET`, `WEBEX`). |
-| `LocationData` | `record` | Immutable record representing classroom location (`building`, `roomNumber`, `capacity`). |
-| `StudentAttendance` | `record` | Immutable record for attendance tracking (`studentId`, `present`, `timestamp`). |
-| `ScheduleEntry` | `interface` | Interface defining scheduling contracts, abstract getters, default `validate()` with private helper method, and static duration summation. |
-| `TimetableItem` | `sealed abstract class` | Sealed base class implementing `ScheduleEntry`, strictly permitting `ClassroomLesson` and `OnlineLesson`. |
-| `ClassroomLesson` | `final class` | Subclass for physical classroom sessions with teacher ID, room status, and location data. |
-| `OnlineLesson` | `final class` | Subclass for virtual sessions with platform, meeting URL, and student attendance records. |
-| `ItemCurrentlyActiveException` | `class (Exception)` | Custom checked exception thrown when an entry or room is currently active or in conflict. |
-| `TimetableManager` | `class` | Central business manager maintaining timetable entries with defensive copying, stream queries, and reports. |
-| `TimetableGUI` | `class (JFrame)` | Fully implemented Swing UI featuring `JList`, `DefaultListModel`, `JTextField`, `JComboBox`, dynamic forms, and functional event listeners. |
-| `Main` | `class` | Application entry point that initializes native Look & Feel and launches the GUI on the Event Dispatch Thread (EDT). |
+Zero Docker, zero cloud dependencies, and zero complex configuration files — runs directly out of your IDE (like IntelliJ IDEA) with a single click.
 
 ---
 
-## 🚀 Getting Started
+## 📁 Project Structure
 
-### Prerequisites
-- **JDK 17 or JDK 21+** (e.g. OpenJDK 21 LTS or 25)
-- **Apache Maven 3.8+**
-
-### Building the Project
-```bash
-mvn clean package
+```text
+c:\java_asmaa\time_table\
+├── pom.xml                               # Standard Maven build file
+├── README.md                             # Step-by-step setup guide
+├── run.bat                               # Optional 1-click batch launcher
+├── sql\
+│   └── schema.sql                        # Single SQL script (Database + Tables + Sample Data)
+└── src\
+    ├── main\java\com\school\timetable\
+    │   ├── Main.java                     # Application Launcher (Click 'Run' here)
+    │   ├── database\
+    │   │   ├── DatabaseConnection.java   # Plain JDBC connection (URL, USER, PASSWORD)
+    │   │   ├── TimetableDAO.java         # Data Access Object interface
+    │   │   └── TimetableDAOImpl.java     # JDBC CRUD operations with MySQL
+    │   ├── exception\
+    │   │   └── ItemCurrentlyActiveException.java
+    │   ├── gui\
+    │   │   └── TimetableGUI.java         # Fully implemented Java Swing UI
+    │   ├── manager\
+    │   │   └── TimetableManager.java     # Business manager with method stubs
+    │   └── model\
+    │       ├── ClassroomLesson.java      # Final class (in-person lesson)
+    │       ├── OnlineLesson.java         # Final class (remote lesson)
+    │       ├── TimetableItem.java        # Sealed abstract base class
+    │       ├── ScheduleEntry.java        # Core interface (default/private/static methods)
+    │       ├── LocationData.java         # Record (building, room, capacity)
+    │       ├── StudentAttendance.java    # Record (studentId, present, timestamp)
+    │       ├── EntryStatus.java          # Enum (SCHEDULED, RESCHEDULED, CANCELLED)
+    │       ├── PlatformType.java         # Enum (ZOOM, TEAMS, GOOGLE_MEET, WEBEX)
+    │       ├── RoomStatus.java           # Enum (AVAILABLE, OCCUPIED, MAINTENANCE, RESERVED)
+    │       └── SubjectType.java          # Enum (MATH, SCIENCE, ENGLISH, etc.)
+    └── test\java\com\school\timetable\
+        └── TimetableSystemTest.java      # Automated unit tests
 ```
 
-### Running the Application
-You can run the application directly with Maven:
-```bash
-mvn exec:java
-```
-Or execute the packaged JAR:
-```bash
-java -jar target/school-timetable-system-1.0.0-SNAPSHOT.jar
+---
+
+## ⚡ 3-Step Setup Guide
+
+### Step 1: Set Up Local MySQL Database
+Open your preferred local MySQL tool:
+- **MySQL Workbench**: Click **File** → **Open SQL Script**, select [`sql/schema.sql`](file:///c:/java_asmaa/time_table/sql/schema.sql), and click the **Lightning Bolt (⚡)** button.
+- **phpMyAdmin (XAMPP)**: Go to `http://localhost/phpmyadmin`, click the **SQL** tab, paste the contents of `sql/schema.sql`, and click **Go**.
+
+*This creates the database `school_timetable_db`, creates all 5 tables, and inserts sample rows.*
+
+### Step 2: Configure Database Credentials (if needed)
+In [`DatabaseConnection.java`](file:///c:/java_asmaa/time_table/src/main/java/com/school/timetable/database/DatabaseConnection.java), check the credentials:
+```java
+private static final String URL = "jdbc:mysql://localhost:3306/school_timetable_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+private static final String USER = "root";
+private static final String PASSWORD = ""; // Leave empty for default XAMPP, or enter your MySQL root password
 ```
 
-### Running Unit Tests
+### Step 3: Run the Application
+- Open the project in **IntelliJ IDEA**.
+- Navigate to `src/main/java/com/school/timetable/Main.java`.
+- Click the green **Run ▶** button next to `public static void main(String[] args)`.
+
+*(Or simply double-click [`run.bat`](file:///c:/java_asmaa/time_table/run.bat) or type `mvn compile exec:java` in your terminal).*
+
+---
+
+## 🧪 Running Unit Tests
+In IntelliJ IDEA or terminal:
 ```bash
 mvn test
 ```
-
----
-
-## 📋 Implementation Guide: Completing the Domain Stubs
-
-As requested, all core domain and manager methods are stubbed with `// TODO: Implement this method` and throw `UnsupportedOperationException("Not implemented yet: ...")`. Below is a guide on how to complete each method:
-
-### 1. `SubjectType.java` & `EntryStatus.java`
-- **Method:** `public static SubjectType fromString(String text)`
-  - Use `Arrays.stream(values()).filter(...)` matching against `name()` or `getDisplayName()` (case-insensitive).
-
-### 2. `ScheduleEntry.java`
-- **Default Method:** `default void validate()`
-  - Implement format validation and business rules (e.g., non-null values, positive durations).
-- **Private Method:** `private void performFormatCheck()`
-  - Validate that time ranges and identifiers conform to standard patterns.
-- **Static Method:** `static Duration calculateTotalDuration(List<ScheduleEntry> entries)`
-  - Sum durations using Java Streams:
-    ```java
-    return entries.stream()
-                  .map(ScheduleEntry::getDuration)
-                  .reduce(Duration.ZERO, Duration::plus);
-    ```
-
-### 3. `TimetableItem.java`
-- **Method:** `public String getScheduledTime()`
-  - Use `DateTimeFormatter` to format the start time and end time:
-    ```java
-    LocalTime endTime = startTime.plus(duration);
-    return startTime.format(TIME_FORMATTER) + " - " + endTime.format(TIME_FORMATTER);
-    ```
-- **Method:** `public boolean isAvailable()`
-  - Check whether the entry status is not `CANCELLED` and time slots do not overlap.
-
-### 4. `ClassroomLesson.java` & `OnlineLesson.java`
-- Implement `getSpecifics()` returning formatted details for display:
-  - In `ClassroomLesson`: Building, Room number, Capacity, Teacher ID, and Room Status.
-  - In `OnlineLesson`: Platform name, Meeting URL, and count of attended students.
-
-### 5. `TimetableManager.java`
-- **Defensive Copying:**
-  - `getLessons()`: Return `new ArrayList<>(this.lessons)`.
-- **Add & Conflict Checking:**
-  - In `addLesson(ScheduleEntry entry)`: Check for overlapping time on the same day for the same room or teacher; throw `ItemCurrentlyActiveException` if a conflict exists; otherwise add to `lessons`.
-- **Weekly Report:**
-  - Use Java Streams:
-    ```java
-    return lessons.stream()
-                  .collect(Collectors.groupingBy(ScheduleEntry::getDay));
-    ```
-- **Teacher Schedule:**
-  - Filter using pattern matching:
-    ```java
-    return lessons.stream()
-                  .filter(e -> e instanceof ClassroomLesson cl && cl.getTeacherId().equalsIgnoreCase(teacherId))
-                  .toList();
-    ```
+All unit tests verify sealed class constraints, record immutability, and method stubs.

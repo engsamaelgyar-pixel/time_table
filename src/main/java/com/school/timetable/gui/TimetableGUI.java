@@ -10,6 +10,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -270,8 +271,8 @@ public class TimetableGUI extends JFrame {
 
         addButton = new JButton("Add Schedule Entry");
         addButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        addButton.setBackground(new Color(33, 53, 85));
-        addButton.setForeground(Color.WHITE);
+        addButton.setBackground(Color.blue);
+        addButton.setForeground(Color.black);
         addButton.setFocusPainted(false);
         addButton.addActionListener(this::onAddLesson);
 
@@ -424,7 +425,6 @@ public class TimetableGUI extends JFrame {
         }
 
         Duration duration = Duration.ofMinutes(durationMins);
-        LocalDateTime endDateTime = LocalDateTime.now().with(startTime).plus(duration);
 
         ScheduleEntry entry;
         boolean isClassroom = "Classroom Lesson".equals(lessonTypeCombo.getSelectedItem());
@@ -437,7 +437,7 @@ public class TimetableGUI extends JFrame {
             RoomStatus roomStatus = (RoomStatus) roomStatusCombo.getSelectedItem();
 
             LocationData location = new LocationData(building, roomNum, cap);
-            entry = new ClassroomLesson(itemId, duration, day, startTime, subject, status, endDateTime,
+            entry = new ClassroomLesson(itemId, duration, day, startTime, subject, status,
                     location, teacherId, roomStatus);
         } else {
             PlatformType platform = (PlatformType) platformCombo.getSelectedItem();
@@ -452,7 +452,7 @@ public class TimetableGUI extends JFrame {
                 sampleAttendance.add(new StudentAttendance("STU-" + (100 + i), true, LocalDateTime.now()));
             }
 
-            entry = new OnlineLesson(itemId, duration, day, startTime, subject, status, endDateTime,
+            entry = new OnlineLesson(itemId, duration, day, startTime, subject, status,
                     platform, meetingUrl, sampleAttendance);
         }
 
@@ -600,7 +600,7 @@ public class TimetableGUI extends JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 manager.removeLesson(selected);
-            } catch (UnsupportedOperationException ex) {
+            } catch (UnsupportedOperationException | SQLException ex) {
                 // Informative note about manager stub
             }
             lessonListModel.removeElement(selected);
@@ -726,7 +726,7 @@ public class TimetableGUI extends JFrame {
             if (existing != null) {
                 existing.forEach(lessonListModel::addElement);
             }
-        } catch (UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException | SQLException ex) {
             // Manager getLessons is a stub; populate sample UI items for user convenience
             populateSampleUIData();
         }
@@ -737,12 +737,12 @@ public class TimetableGUI extends JFrame {
         // Initial sample items to populate JList for immediate visual verification
         ClassroomLesson c1 = new ClassroomLesson(
                 "CLS-101", Duration.ofMinutes(60), DayOfWeek.MONDAY, LocalTime.of(9, 0),
-                SubjectType.MATH, EntryStatus.SCHEDULED, LocalDateTime.now().plusHours(1),
+                SubjectType.MATH, EntryStatus.SCHEDULED,
                 new LocationData("Main Science Wing", "Lab 101", "30"), "TCH-1001", RoomStatus.AVAILABLE);
 
         OnlineLesson o1 = new OnlineLesson(
                 "ONL-201", Duration.ofMinutes(45), DayOfWeek.WEDNESDAY, LocalTime.of(14, 0),
-                SubjectType.SCIENCE, EntryStatus.SCHEDULED, LocalDateTime.now().plusHours(2),
+                SubjectType.SCIENCE, EntryStatus.SCHEDULED,
                 PlatformType.TEAMS, "https://teams.microsoft.com/l/meetup/123",
                 List.of(new StudentAttendance("STU-001", true, LocalDateTime.now())));
 

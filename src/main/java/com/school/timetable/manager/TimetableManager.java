@@ -3,7 +3,9 @@ package com.school.timetable.manager;
 import com.school.timetable.exception.ItemCurrentlyActiveException;
 import com.school.timetable.model.ClassroomLesson;
 import com.school.timetable.model.ScheduleEntry;
+import com.school.timetable.database.TimetableDAOImpl;
 
+import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,9 +41,10 @@ public class TimetableManager {
      *
      * @return new ArrayList containing the lessons
      */
-    public List<ScheduleEntry> getLessons() {
-        // TODO: Implement defensive copying (e.g. return new ArrayList<>(lessons);)
-        throw new UnsupportedOperationException("Not implemented yet: TimetableManager.getLessons()");
+    public List<ScheduleEntry> getLessons() throws SQLException, UnsupportedOperationException {
+        TimetableDAOImpl data= new TimetableDAOImpl();
+       return data.findAllLessons();
+
     }
 
     /**
@@ -52,9 +55,13 @@ public class TimetableManager {
      * @throws IllegalArgumentException     if entry is null
      */
     public void addLesson(ScheduleEntry entry) throws ItemCurrentlyActiveException {
-        // TODO: Implement schedule validation, check for active conflicts (throw ItemCurrentlyActiveException),
-        // and append entry to this.lessons list.
-        throw new UnsupportedOperationException("Not implemented yet: TimetableManager.addLesson(ScheduleEntry)");
+         TimetableDAOImpl data=new TimetableDAOImpl();
+        try {
+
+            data.saveLesson(entry);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -62,9 +69,10 @@ public class TimetableManager {
      *
      * @param entry schedule entry to remove
      */
-    public void removeLesson(ScheduleEntry entry) {
-        // TODO: Implement removal of entry from this.lessons (e.g. this.lessons.remove(entry))
-        throw new UnsupportedOperationException("Not implemented yet: TimetableManager.removeLesson(ScheduleEntry)");
+    public void removeLesson(ScheduleEntry entry) throws SQLException {
+        TimetableDAOImpl data = new TimetableDAOImpl();
+        data.deleteLesson(entry.getItemId());
+
     }
 
     /**
