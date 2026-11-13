@@ -114,19 +114,21 @@ public class TimetableDAOImpl implements TimetableDAO {
         List<ScheduleEntry> results = new ArrayList<>();
         results.addAll(findAllClassroomLessons());
         results.addAll(findAllOnlineLessons());
-        System.out.println("res is "+results.toString());
         return results;
     }
 
     @Override
-    public List<ClassroomLesson> findClassroomLessonsByTeacher(String teacherId) throws SQLException {
+    public List<ScheduleEntry> findClassroomLessonsByTeacher(String teacherId) throws SQLException {
         String sql = """
-            SELECT item_id, subject, day_of_week, start_time, duration_minutes, end_datetime, status,
-                   teacher_id, room_status, building, room_number, capacity
-            FROM vw_classroom_lessons
+            SELECT cl.item_id, ti.subject, ti.day_of_week, ti.start_time, ti.duration_minutes,
+                    ti.status, cl.teacher_id, cl.room_status,
+                   loc.building, loc.room_number, loc.capacity
+            FROM timetable_items ti
+            JOIN classroom_lessons cl ON ti.item_id = cl.item_id
+            JOIN locations loc ON cl.location_id = loc.location_id
             WHERE teacher_id = ?
             """;
-        List<ClassroomLesson> list = new ArrayList<>();
+        List<ScheduleEntry> list = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, teacherId);

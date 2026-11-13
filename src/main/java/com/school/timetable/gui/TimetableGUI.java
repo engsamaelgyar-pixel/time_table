@@ -668,7 +668,7 @@ public class TimetableGUI extends JFrame {
             JTextArea textArea = new JTextArea(sb.toString(), 12, 36);
             textArea.setEditable(false);
             JOptionPane.showMessageDialog(this, new JScrollPane(textArea), "Teacher Schedule", JOptionPane.INFORMATION_MESSAGE);
-        } catch (UnsupportedOperationException stubEx) {
+        } catch (UnsupportedOperationException | SQLException stubEx) {
             JOptionPane.showMessageDialog(this,
                     "TimetableManager.generateTeacherSchedule(String) is currently a stub for you to implement!\n\n" +
                     "Implementation guidance:\n" +

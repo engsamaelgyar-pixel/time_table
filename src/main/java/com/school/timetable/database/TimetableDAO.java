@@ -1,6 +1,5 @@
 package com.school.timetable.database;
 
-import com.school.timetable.model.ClassroomLesson;
 import com.school.timetable.model.ScheduleEntry;
 import com.school.timetable.model.StudentAttendance;
 
@@ -23,7 +22,7 @@ public interface TimetableDAO {
      * @return list of matching ClassroomLessons
      * @throws SQLException on database error
      */
-    List<ClassroomLesson> findClassroomLessonsByTeacher(String teacherId) throws SQLException;
+    List<ScheduleEntry> findClassroomLessonsByTeacher(String teacherId) throws SQLException;
 
     /**
      * Records a student attendance entry for an online lesson.
