@@ -18,7 +18,7 @@ public abstract sealed class TimetableItem implements ScheduleEntry permits Clas
     protected LocalTime startTime;
     protected final SubjectType subject;
     protected EntryStatus status;
-    protected LocalDateTime endDateTime;
+
 
     protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -26,14 +26,14 @@ public abstract sealed class TimetableItem implements ScheduleEntry permits Clas
      * Protected constructor for sealed hierarchy.
      */
     public TimetableItem(String itemId, Duration duration, DayOfWeek day, LocalTime startTime,
-                         SubjectType subject, EntryStatus status, LocalDateTime endDateTime) {
+                         SubjectType subject, EntryStatus status) {
         this.itemId = itemId;
         this.duration = duration;
         this.day = day;
         this.startTime = startTime;
         this.subject = subject;
         this.status = status;
-        this.endDateTime = endDateTime;
+
     }
 
     @Override
@@ -78,13 +78,6 @@ public abstract sealed class TimetableItem implements ScheduleEntry permits Clas
         this.status = status;
     }
 
-    public LocalDateTime getEndDateTime() {
-        return endDateTime;
-    }
-
-    public void setEndDateTime(LocalDateTime endDateTime) {
-        this.endDateTime = endDateTime;
-    }
 
     /**
      * Formats start and end times into a readable range (e.g. "09:00 - 10:00").

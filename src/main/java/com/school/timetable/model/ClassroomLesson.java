@@ -15,9 +15,9 @@ public final class ClassroomLesson extends TimetableItem {
     private RoomStatus roomStatus;
 
     public ClassroomLesson(String itemId, Duration duration, DayOfWeek day, LocalTime startTime,
-                           SubjectType subject, EntryStatus status, LocalDateTime endDateTime,
+                           SubjectType subject, EntryStatus status,
                            LocationData location, String teacherId, RoomStatus roomStatus) {
-        super(itemId, duration, day, startTime, subject, status, endDateTime);
+        super(itemId, duration, day, startTime, subject, status);
         this.location = location;
         this.teacherId = teacherId;
         this.roomStatus = roomStatus;

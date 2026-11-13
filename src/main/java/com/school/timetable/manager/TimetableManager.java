@@ -3,7 +3,9 @@ package com.school.timetable.manager;
 import com.school.timetable.exception.ItemCurrentlyActiveException;
 import com.school.timetable.model.ClassroomLesson;
 import com.school.timetable.model.ScheduleEntry;
+import com.school.timetable.database.TimetableDAOImpl;
 
+import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,50 +23,41 @@ public class TimetableManager {
 
     private final List<ScheduleEntry> lessons;
 
-    /**
-     * Constructs a TimetableManager with optional initial lessons.
-     *
-     * @param initialLessons initial schedule entries
-     */
-    public TimetableManager(ScheduleEntry... initialLessons) {
+
+    public TimetableManager() {
         this.lessons = new ArrayList<>();
-        if (initialLessons != null) {
-            // TODO: Implement defensive copying: add non-null items to this.lessons
-            // Arrays.stream(initialLessons).filter(Objects::nonNull).forEach(this.lessons::add);
+
+    }
+
+
+     //return new ArrayList containing the lessons
+
+    public List<ScheduleEntry> getLessons() throws SQLException, UnsupportedOperationException {
+        TimetableDAOImpl data= new TimetableDAOImpl();
+       return data.findAllLessons();
+
+    }
+
+
+     // Adds a new timetable entry after performing validation.
+
+    public void addLesson(ScheduleEntry entry) throws ItemCurrentlyActiveException {
+         TimetableDAOImpl data=new TimetableDAOImpl();
+        try {
+
+            data.saveLesson(entry);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Returns a defensive copy of all managed schedule entries.
-     *
-     * @return new ArrayList containing the lessons
-     */
-    public List<ScheduleEntry> getLessons() {
-        // TODO: Implement defensive copying (e.g. return new ArrayList<>(lessons);)
-        throw new UnsupportedOperationException("Not implemented yet: TimetableManager.getLessons()");
-    }
 
-    /**
-     * Adds a new timetable entry after performing validation.
-     *
-     * @param entry schedule entry to add
-     * @throws ItemCurrentlyActiveException if an active item conflicts with the new entry
-     * @throws IllegalArgumentException     if entry is null
-     */
-    public void addLesson(ScheduleEntry entry) throws ItemCurrentlyActiveException {
-        // TODO: Implement schedule validation, check for active conflicts (throw ItemCurrentlyActiveException),
-        // and append entry to this.lessons list.
-        throw new UnsupportedOperationException("Not implemented yet: TimetableManager.addLesson(ScheduleEntry)");
-    }
+     // Removes an existing timetable entry.
 
-    /**
-     * Removes an existing timetable entry.
-     *
-     * @param entry schedule entry to remove
-     */
-    public void removeLesson(ScheduleEntry entry) {
-        // TODO: Implement removal of entry from this.lessons (e.g. this.lessons.remove(entry))
-        throw new UnsupportedOperationException("Not implemented yet: TimetableManager.removeLesson(ScheduleEntry)");
+    public void removeLesson(ScheduleEntry entry) throws SQLException {
+        TimetableDAOImpl data = new TimetableDAOImpl();
+        data.deleteLesson(entry.getItemId());
+
     }
 
     /**
@@ -89,8 +82,12 @@ public class TimetableManager {
      * @param teacherId the teacher identifier
      * @return filtered list of schedule entries
      */
-    public List<ScheduleEntry> generateTeacherSchedule(String teacherId) {
-        // TODO: Implement filtering using Streams, lambda expressions, pattern matching for instanceof, and Predicates
-        throw new UnsupportedOperationException("Not implemented yet: TimetableManager.generateTeacherSchedule(String)");
+    public List<ScheduleEntry> generateTeacherSchedule(String teacherId) throws SQLException {
+        TimetableDAOImpl data =new TimetableDAOImpl();
+        try {
+            return data.findClassroomLessonsByTeacher(teacherId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

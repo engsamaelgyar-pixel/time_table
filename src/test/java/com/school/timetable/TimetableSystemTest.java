@@ -57,7 +57,7 @@ public class TimetableSystemTest {
         LocationData loc = new LocationData("Science Wing", "Lab 201", "35");
         ClassroomLesson lesson = new ClassroomLesson(
                 "CLS-101", Duration.ofMinutes(60), DayOfWeek.MONDAY, LocalTime.of(9, 0),
-                SubjectType.MATH, EntryStatus.SCHEDULED, LocalDateTime.now().plusHours(1),
+                SubjectType.MATH, EntryStatus.SCHEDULED,
                 loc, "TCH-SMITH", RoomStatus.AVAILABLE);
 
         assertEquals("CLS-101", lesson.getItemId());
@@ -77,7 +77,7 @@ public class TimetableSystemTest {
         StudentAttendance att = new StudentAttendance("STU-001", true, LocalDateTime.now());
         OnlineLesson lesson = new OnlineLesson(
                 "ONL-201", Duration.ofMinutes(45), DayOfWeek.WEDNESDAY, LocalTime.of(14, 0),
-                SubjectType.SCIENCE, EntryStatus.SCHEDULED, LocalDateTime.now().plusHours(2),
+                SubjectType.SCIENCE, EntryStatus.SCHEDULED,
                 PlatformType.TEAMS, "https://teams.microsoft.com/meet/123",
                 List.of(att));
 
@@ -98,7 +98,7 @@ public class TimetableSystemTest {
         LocationData loc = new LocationData("Science Wing", "Lab 201", "35");
         ClassroomLesson lesson = new ClassroomLesson(
                 "CLS-101", Duration.ofMinutes(60), DayOfWeek.MONDAY, LocalTime.of(9, 0),
-                SubjectType.MATH, EntryStatus.SCHEDULED, LocalDateTime.now().plusHours(1),
+                SubjectType.MATH, EntryStatus.SCHEDULED,
                 loc, "TCH-SMITH", RoomStatus.AVAILABLE);
 
         assertThrows(UnsupportedOperationException.class, lesson::getScheduledTime);

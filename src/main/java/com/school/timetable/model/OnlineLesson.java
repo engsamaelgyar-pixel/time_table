@@ -18,9 +18,9 @@ public final class OnlineLesson extends TimetableItem {
     private final List<StudentAttendance> attendanceRecords;
 
     public OnlineLesson(String itemId, Duration duration, DayOfWeek day, LocalTime startTime,
-                        SubjectType subject, EntryStatus status, LocalDateTime endDateTime,
+                        SubjectType subject, EntryStatus status,
                         PlatformType platform, String meetingUrl, List<StudentAttendance> attendanceRecords) {
-        super(itemId, duration, day, startTime, subject, status, endDateTime);
+        super(itemId, duration, day, startTime, subject, status);
         this.platform = platform;
         this.meetingUrl = meetingUrl;
         this.attendanceRecords = attendanceRecords != null ? new ArrayList<>(attendanceRecords) : new ArrayList<>();
